@@ -23,9 +23,13 @@ using namespace cv;
 @implementation OpenCVBridge
 
 
+// This can cause namespace issues when declaring a variable like this
+// BUT IT IS OKAY FOR FLIPPED MODULE TO DO THIS
+float globalNameScopeVector[10];
 
 #pragma mark ===Write Your Code Here===
 // you can define your own functions here for processing the image
+
 
 
 #pragma mark Define Custom Functions Here
@@ -34,7 +38,6 @@ using namespace cv;
     cv::Mat frame_gray,image_copy;
     const int kCannyLowThreshold = 150;
     const int kFilterKernelSize = 5;
-    
     
     
     

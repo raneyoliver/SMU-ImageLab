@@ -197,6 +197,7 @@ class VisionAnalgesic:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, MT
             self.session?.addOutput(output)
             output.connections.first?.videoOrientation = .portrait
             self.session?.startRunning()
+            
         }
     }
  
@@ -243,6 +244,10 @@ class VisionAnalgesic:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, MT
     }
     
     internal func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        
+        if let session = self.session{
+            if !session.isRunning{ return }
+        }
         // Grab the pixelbuffer frame from the camera output
         guard let pixelBuffer = sampleBuffer.imageBuffer else { return }
         processVideoFrame(pixelBuffer)
