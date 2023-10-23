@@ -41,8 +41,14 @@ using namespace cv;
     switch (self.processType) {
         case 1:
         {
-            cvtColor( _image, frame_gray, CV_BGR2GRAY );
+            // get rid of alpha channel
+            cvtColor(_image, image_copy, CV_BGRA2BGR);
+            // make gray
+            cvtColor( image_copy, frame_gray, CV_BGR2GRAY );
+            // take the inverse of gray image
             bitwise_not(frame_gray, _image);
+            // convert back to RGB for display.
+            cvtColor( _image, _image, CV_GRAY2BGRA );
             return;
             break;
         }
@@ -211,7 +217,7 @@ using namespace cv;
                          CV_HOUGH_GRADIENT,
                          1, // downsample factor
                          image_copy.rows/20, // distance between centers
-                         kCannyLowThreshold/2, // canny upper thresh
+                         kCannyLowThreshold, // canny upper thresh
                          40, // magnitude thresh for hough param space
                          0, 0 ); // min/max centers
             
@@ -401,8 +407,9 @@ using namespace cv;
                                         8 * _image.elemSize(),                           // Bits per pixel
                                         _image.step[0],                                  // Bytes per row
                                         colorSpace,                                     // Colorspace
+                                        kCGImageAlphaNoneSkipLast,
                                         //kCGImageAlphaLast |
-                                        kCGBitmapByteOrderDefault,  // Bitmap info flags
+                                        //kCGBitmapByteOrderDefault,  // Bitmap info flags
                                         provider,                                       // CGDataProviderRef
                                         NULL,                                           // Decode
                                         false,                                          // Should interpolate
