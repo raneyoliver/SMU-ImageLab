@@ -194,7 +194,11 @@ class VisionAnalgesic:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, MT
             // output updates the UI and MUST be on Main queue
             output.setSampleBufferDelegate(self, queue: .main)
             
-            self.session?.addOutput(output)
+            if !self.session!.outputs.contains(where: { $0 is AVCaptureVideoDataOutput }) {
+                // Add the output here
+                self.session?.addOutput(output)
+            }
+            
             output.connections.first?.videoOrientation = .portrait
             self.session?.startRunning()
             

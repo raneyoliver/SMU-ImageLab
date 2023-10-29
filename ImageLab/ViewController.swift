@@ -18,6 +18,7 @@ class ViewController: UIViewController   {
     let pinchFilterIndex = 2
     var detector:CIDetector! = nil
     let bridge = OpenCVBridge()
+    var readingFinger:Bool = false
     
     //MARK: Outlets in view
     @IBOutlet weak var flashSlider: UISlider!
@@ -34,7 +35,7 @@ class ViewController: UIViewController   {
         self.bridge.loadHaarCascade(withFilename: "nose")
         
         self.videoManager = VisionAnalgesic(view: self.cameraView)
-        self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.front)
+        self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.back)
         
         // create dictionary for face detection
         // HINT: you need to manipulate these properties for better face detection efficiency
@@ -55,14 +56,17 @@ class ViewController: UIViewController   {
     
     }
     
+    @IBOutlet weak var flashButton: UIButton!
+    @IBOutlet weak var camButton: UIButton!
+    
     //MARK: Process image output
     func processImageSwift(inputImage:CIImage) -> CIImage{
         
         // detect faces
-        let f = getFaces(img: inputImage)
+        //let f = getFaces(img: inputImage)
         
         // if no faces, just return original image
-        if f.count == 0 { return inputImage }
+        //if f.count == 0 { return inputImage }
         
         var retImage = inputImage
         
@@ -81,22 +85,37 @@ class ViewController: UIViewController   {
         // this is a BLOCKING CALL
         /*
         // FOR FLIPPED ASSIGNMENT, YOU MAY BE INTERESTED IN THIS EXAMPLE
-        
+        */
         self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
-        self.bridge.processImage()
-        retImage = self.bridge.getImage()
-         */
+        self.readingFinger = self.bridge.processFinger()
+        print(self.readingFinger)
+        
+        DispatchQueue.main.async {
+            self.flashButton.isEnabled = self.readingFinger
+            self.camButton.isEnabled = self.readingFinger
+        }
+        if (!self.readingFinger) {
+            let overheat = self.videoManager.turnOnFlashwithLevel(1.0)
+            if (overheat) {
+                self.videoManager.turnOffFlash()
+            }
+        } else {
+            self.videoManager.turnOffFlash()
+        }
+        
+        retImage = self.bridge.getImageComposite()
+        
         
         //-------------------Example 3----------------------------------
         //You can also send in the bounds of the face to ONLY process the face in OpenCV
         // or any bounds to only process a certain bounding region in OpenCV
         
-        self.bridge.setImage(retImage,
-                             withBounds: f[0].bounds, // the first face bounds
-                             andContext: self.videoManager.getCIContext())
-        
-        self.bridge.processImage()
-        retImage = self.bridge.getImageComposite() // get back opencv processed part of the image (overlayed on original)
+//        self.bridge.setImage(retImage,
+//                             withBounds: f[0].bounds, // the first face bounds
+//                             andContext: self.videoManager.getCIContext())
+//
+        //self.bridge.processImage()
+        //retImage = self.bridge.getImageComposite() // get back opencv processed part of the image (overlayed on original)
         
         return retImage
     }

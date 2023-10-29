@@ -23,6 +23,9 @@ using namespace cv;
 @implementation OpenCVBridge
 
 
+vector<vector<int>> fingerReading(3, vector<int>(0));
+int countdown = 0;
+
 // This can cause namespace issues when declaring a variable like this
 // BUT IT IS OKAY FOR FLIPPED MODULE TO DO THIS
 float globalNameScopeVector[10];
@@ -33,6 +36,57 @@ float globalNameScopeVector[10];
 
 
 #pragma mark Define Custom Functions Here
+-(bool)processFinger{
+    cv::Mat image_copy;
+    char text[50];
+    Scalar avgPixelIntensity;
+    
+    cvtColor(_image, image_copy, CV_BGRA2BGR); // get rid of alpha for processing
+    avgPixelIntensity = cv::mean( image_copy );
+    // they say that sprintf is depricated, but it still works for c++
+    //sprintf(text,"Avg. R: %.0f, G: %.0f, B: %.0f", avgPixelIntensity.val[0],avgPixelIntensity.val[1],avgPixelIntensity.val[2]);
+    //cv::putText(_image, text, cv::Point(0, 20), FONT_HERSHEY_PLAIN, 2.0, Scalar::all(255), 1, 2);
+    
+    const int sum = avgPixelIntensity.val[0] + avgPixelIntensity.val[1] + avgPixelIntensity.val[2];
+    //std::cout << fingerReading[0].size();
+    
+    if (sum <= 15 and countdown == 0) {
+        countdown = 50;
+    }
+    
+    // reading
+    if (countdown > 0) {
+        
+        if (fingerReading[0].size() == 100) {
+            //putText
+            sprintf(text,"finished reading finger!");
+            cv::putText(_image, text, cv::Point(400, 1000), FONT_HERSHEY_PLAIN, 2.0, Scalar::all(255), 1, 2);
+            countdown -= 1;
+            return true;
+        }
+        else {
+            //take reading
+            sprintf(text,"reading...");
+            cv::putText(_image, text, cv::Point(400, 1000), FONT_HERSHEY_PLAIN, 2.0, Scalar::all(255), 1, 2);
+            for (int i = 0; i < 3; i++) {
+                fingerReading[i].push_back(avgPixelIntensity.val[i]);
+            }
+            return false;
+        }
+        
+        
+    } else {
+        // not reading
+        for (int i = 0; i < 3; i++) {
+            fingerReading[i].clear();
+        }
+
+        return true;
+    }
+    
+}
+
+
 -(void)processImage{
     
     cv::Mat frame_gray,image_copy;
