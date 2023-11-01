@@ -1,11 +1,3 @@
-//
-//  ViewController.swift
-//  ImageLab
-//
-//  Created by Eric Larson
-//  Copyright © Eric Larson. All rights reserved.
-//
-
 import UIKit
 import AVFoundation
 import MetalKit
@@ -70,53 +62,20 @@ class ViewController: UIViewController   {
         
         var retImage = inputImage
         
-        //-------------------Example 1----------------------------------
-        // if you just want to process on separate queue use this code
-        // this is a NON BLOCKING CALL, but any changes to the image in OpenCV cannot be displayed real time
-        /*
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
-            self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
-            self.bridge.processImage()
-        }
-         */
-        
-        //-------------------Example 2----------------------------------
-        // use this code if you are using OpenCV and want to overwrite the displayed image via OpenCV
-        // this is a BLOCKING CALL
-        /*
-        // FOR FLIPPED ASSIGNMENT, YOU MAY BE INTERESTED IN THIS EXAMPLE
-        */
         self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
         self.readingFinger = self.bridge.processFinger()
-        print(self.readingFinger)
         
-        DispatchQueue.main.async {
-            self.flashButton.isEnabled = self.readingFinger
-            self.camButton.isEnabled = self.readingFinger
-        }
+//        DispatchQueue.main.async {
+//            self.flashButton.isEnabled = self.readingFinger
+//            self.camButton.isEnabled = self.readingFinger
+//        }
         if (!self.readingFinger) {
             let overheat = self.videoManager.turnOnFlashwithLevel(1.0)
             if (overheat) {
                 self.videoManager.turnOffFlash()
             }
-        } else {
-            self.videoManager.turnOffFlash()
         }
-        
         retImage = self.bridge.getImageComposite()
-        
-        
-        //-------------------Example 3----------------------------------
-        //You can also send in the bounds of the face to ONLY process the face in OpenCV
-        // or any bounds to only process a certain bounding region in OpenCV
-        
-//        self.bridge.setImage(retImage,
-//                             withBounds: f[0].bounds, // the first face bounds
-//                             andContext: self.videoManager.getCIContext())
-//
-        //self.bridge.processImage()
-        //retImage = self.bridge.getImageComposite() // get back opencv processed part of the image (overlayed on original)
-        
         return retImage
     }
     
