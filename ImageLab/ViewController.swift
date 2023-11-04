@@ -16,6 +16,10 @@ class ViewController: UIViewController   {
     @IBOutlet weak var flashSlider: UISlider!
     @IBOutlet weak var stageLabel: UILabel!
     @IBOutlet weak var cameraView: MTKView!
+    @IBOutlet weak var headAngleLabel: UILabel!
+    
+    @IBOutlet weak var smilingLabel: UILabel!
+    @IBOutlet weak var blinkingLabel: UILabel!
     
     //MARK: ViewController Hierarchy
     override func viewDidLoad() {
@@ -27,7 +31,7 @@ class ViewController: UIViewController   {
         self.bridge.loadHaarCascade(withFilename: "nose")
         
         self.videoManager = VisionAnalgesic(view: self.cameraView)
-        self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.back)
+        self.videoManager.setCameraPosition(position: AVCaptureDevice.Position.front)
         
         // create dictionary for face detection
         // HINT: you need to manipulate these properties for better face detection efficiency
@@ -55,27 +59,105 @@ class ViewController: UIViewController   {
     func processImageSwift(inputImage:CIImage) -> CIImage{
         
         // detect faces
-        //let f = getFaces(img: inputImage)
-        
-        // if no faces, just return original image
-        //if f.count == 0 { return inputImage }
+        let f = getFaces(img: inputImage)
         
         var retImage = inputImage
-        
-        self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
-        self.readingFinger = self.bridge.processFinger()
-        
-//        DispatchQueue.main.async {
-//            self.flashButton.isEnabled = self.readingFinger
-//            self.camButton.isEnabled = self.readingFinger
-//        }
         if (!self.readingFinger) {
-            let overheat = self.videoManager.turnOnFlashwithLevel(1.0)
-            if (overheat) {
+            self.videoManager.turnOffFlash()
+        }
+        
+        if f.count == 0 {
+            self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
+
+            self.readingFinger = self.bridge.processFinger()
+            if (self.readingFinger) {
+                let overheat = self.videoManager.turnOnFlashwithLevel(1.0)
+                if (overheat) {
+                    self.videoManager.turnOffFlash()
+                }
+            } else {
                 self.videoManager.turnOffFlash()
             }
+        } else {
+            for face in f {
+                self.bridge.setImage(retImage,
+                                     withBounds: face.bounds, // the first face bounds
+                                     andContext: self.videoManager.getCIContext())
+                
+                self.bridge.processImage()
+                retImage = self.bridge.getImageComposite()
+                
+                retImage = self.mouth(face: face, retImage: retImage)
+                retImage = self.leftEye(face: face, retImage: retImage)
+                retImage = self.rightEye(face: face, retImage: retImage)
+            
+                
+                let isLeftEyeBlinking = face.hasLeftEyePosition && face.leftEyeClosed
+                let isRightEyeBlinking = face.hasRightEyePosition && face.rightEyeClosed
+                
+                let isSmiling = face.hasSmile
+                let headAngleText = "Head Angle: \(face.faceAngle)"
+                
+                print("left eye closed: \(face.leftEyeClosed), right eye closed: \(face.rightEyeClosed), smiling: \(isSmiling)")
+                
+                self.headAngleLabel.text = headAngleText
+                self.blinkingLabel.text = isLeftEyeBlinking || isRightEyeBlinking ? "Blinking" : "Not Blinking"
+                self.smilingLabel.text = isSmiling ? "Smiling" : "Not Smiling"
+            }
         }
-        retImage = self.bridge.getImageComposite()
+        
+        return retImage
+    }
+    
+    func leftEye(face:CIFaceFeature, retImage:CIImage) -> CIImage {
+        if (face.hasLeftEyePosition) {
+            let leftEyeBounds = CGRect(x: face.leftEyePosition.x - face.bounds.size.width / 4,
+                                       y: face.leftEyePosition.y - face.bounds.size.height / 8,
+                                       width: face.bounds.size.width / 2,
+                                       height: face.bounds.size.height / 4)
+            self.bridge.setImage(retImage,
+                                 withBounds: leftEyeBounds, // the first face bounds
+                                 andContext: self.videoManager.getCIContext())
+            
+            self.bridge.processFacialFeatures()
+            return self.bridge.getImageComposite()
+        }
+        
+        return retImage
+    }
+    
+    func rightEye(face:CIFaceFeature, retImage:CIImage) -> CIImage {
+        if (face.hasRightEyePosition) {
+            let rightEyeBounds = CGRect(x: face.rightEyePosition.x - face.bounds.size.width / 4,
+                                           y: face.rightEyePosition.y - face.bounds.size.height / 8,
+                                           width: face.bounds.size.width / 2,
+                                           height: face.bounds.size.height / 4)
+            self.bridge.setImage(retImage,
+                                 withBounds: rightEyeBounds, // the first face bounds
+                                 andContext: self.videoManager.getCIContext())
+            
+            self.bridge.processFacialFeatures()
+            return self.bridge.getImageComposite()
+        }
+        
+        return retImage
+    }
+    
+    func mouth(face:CIFaceFeature, retImage:CIImage) -> CIImage {
+        if (face.hasMouthPosition) {
+            let mouthBounds = CGRect(x: face.mouthPosition.x - face.bounds.size.width / 4,
+                                        y: face.mouthPosition.y - face.bounds.size.height / 8,
+                                        width: face.bounds.size.width / 2,
+                                        height: face.bounds.size.height / 4)
+            self.bridge.setImage(retImage,
+                                 withBounds: mouthBounds, // the first face bounds
+                                 andContext: self.videoManager.getCIContext())
+            
+            self.bridge.processFacialFeatures()
+            return self.bridge.getImageComposite()
+        
+        }
+        
         return retImage
     }
     
@@ -83,7 +165,7 @@ class ViewController: UIViewController   {
     
     func getFaces(img:CIImage) -> [CIFaceFeature]{
         // this ungodly mess makes sure the image is the correct orientation
-        let optsFace = [CIDetectorImageOrientation:self.videoManager.ciOrientation]
+        let optsFace: [String: Any] = [CIDetectorImageOrientation:self.videoManager.ciOrientation, CIDetectorEyeBlink:true, CIDetectorSmile:true]
         // get Face Features
         return self.detector.features(in: img, options: optsFace) as! [CIFaceFeature]
         

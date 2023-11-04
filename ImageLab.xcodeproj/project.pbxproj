@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A74F6DB32AF465B70024A002 /* ViewControllerB.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74F6DB22AF465B70024A002 /* ViewControllerB.swift */; };
+		A74F6DB52AF4872D0024A002 /* PPGGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74F6DB42AF4872D0024A002 /* PPGGraphView.swift */; };
 		B650B31B1D8340F0000114A1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B650B31A1D8340F0000114A1 /* AppDelegate.swift */; };
 		B650B31D1D8340F0000114A1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B650B31C1D8340F0000114A1 /* ViewController.swift */; };
 		B650B3201D8340F0000114A1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B650B31E1D8340F0000114A1 /* Main.storyboard */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A74F6DB22AF465B70024A002 /* ViewControllerB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerB.swift; sourceTree = "<group>"; };
+		A74F6DB42AF4872D0024A002 /* PPGGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PPGGraphView.swift; sourceTree = "<group>"; };
 		B650B3171D8340F0000114A1 /* ImageLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B650B31A1D8340F0000114A1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B650B31C1D8340F0000114A1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -72,6 +76,8 @@
 			children = (
 				B650B31A1D8340F0000114A1 /* AppDelegate.swift */,
 				B650B31C1D8340F0000114A1 /* ViewController.swift */,
+				A74F6DB42AF4872D0024A002 /* PPGGraphView.swift */,
+				A74F6DB22AF465B70024A002 /* ViewControllerB.swift */,
 				B650B31E1D8340F0000114A1 /* Main.storyboard */,
 				B650B3211D8340F0000114A1 /* Assets.xcassets */,
 				B650B3231D8340F0000114A1 /* LaunchScreen.storyboard */,
@@ -174,6 +180,8 @@
 			files = (
 				B650B31D1D8340F0000114A1 /* ViewController.swift in Sources */,
 				B650B31B1D8340F0000114A1 /* AppDelegate.swift in Sources */,
+				A74F6DB32AF465B70024A002 /* ViewControllerB.swift in Sources */,
+				A74F6DB52AF4872D0024A002 /* PPGGraphView.swift in Sources */,
 				B67B72BB1D996ADE008EDDE1 /* OpenCVBridge.mm in Sources */,
 				B6885D9A2ADD73A100C11AFF /* VisionAnalgesic.swift in Sources */,
 			);

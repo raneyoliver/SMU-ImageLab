@@ -23,7 +23,7 @@ using namespace cv;
 @implementation OpenCVBridge
 
 
-vector<vector<int>> fingerReading(3, vector<int>(0));
+vector<vector<double>> fingerReading(3, vector<double>(0));
 int countdown = 0;
 
 // This can cause namespace issues when declaring a variable like this
@@ -36,6 +36,50 @@ float globalNameScopeVector[10];
 
 
 #pragma mark Define Custom Functions Here
+-(int)getLatestData{
+    return fingerReading[0].back();
+}
+-(double)getFingerReading:(int)fps{
+    if (fingerReading[0].size() < 500) {
+        //std::cout << "Still reading..." << std::endl;
+        return -1.0;
+    }
+    std::vector<double> smoothedSignal;
+    int windowSize = 5;  // Adjust this value based on your needs
+
+    for(int i = windowSize; i < fingerReading[0].size() - windowSize; i++) {
+        double sum = 0.0;
+        for(int j = i - windowSize; j <= i + windowSize; j++) {
+            sum += fingerReading[0][j];
+        }
+        smoothedSignal.push_back(sum / (2.0 * static_cast<double>(windowSize) + 1.0));
+    }
+
+    std::vector<int> peakIndices;
+
+    for(int i = 200; i < smoothedSignal.size() - 1; i++) {
+        if(smoothedSignal[i] > smoothedSignal[i - 1] && smoothedSignal[i] > smoothedSignal[i + 1]) {
+            peakIndices.push_back(i);
+        }
+    }
+
+    if(peakIndices.size() >= 2) {
+        int totalInterval = 0;
+        for(int i = 1; i < peakIndices.size(); i++) {
+            totalInterval += (peakIndices[i] - peakIndices[i - 1]);
+        }
+        double averageInterval = static_cast<double>(totalInterval) / (peakIndices.size() - 1);
+        double frequency = fps / averageInterval;  // Assuming the time between frames is 1 second (adjust accordingly)
+        double heartRateBPM = frequency * 60;
+        //std::cout << "Estimated Heart Rate: " << heartRateBPM << " BPM" << std::endl;
+        return heartRateBPM;
+    } else {
+        //std::cout << "Not enough peaks detected to estimate heart rate." << std::endl;
+        return -1.0;
+    }
+
+}
+
 -(bool)processFinger{
     cv::Mat image_copy;
     char text[50];
@@ -44,34 +88,36 @@ float globalNameScopeVector[10];
     cvtColor(_image, image_copy, CV_BGRA2BGR); // get rid of alpha for processing
     avgPixelIntensity = cv::mean( image_copy );
     // they say that sprintf is depricated, but it still works for c++
-    //sprintf(text,"Avg. R: %.0f, G: %.0f, B: %.0f", avgPixelIntensity.val[0],avgPixelIntensity.val[1],avgPixelIntensity.val[2]);
-    //cv::putText(_image, text, cv::Point(0, 20), FONT_HERSHEY_PLAIN, 2.0, Scalar::all(255), 1, 2);
+    sprintf(text,"Avg. R: %.0f, G: %.0f, B: %.0f", avgPixelIntensity.val[0],avgPixelIntensity.val[1],avgPixelIntensity.val[2]);
+    cv::putText(_image, text, cv::Point(0, 20), FONT_HERSHEY_PLAIN, 2.0, Scalar::all(255), 1, 2);
+    
     
     const int sum = avgPixelIntensity.val[0] + avgPixelIntensity.val[1] + avgPixelIntensity.val[2];
     //std::cout << fingerReading[0].size();
     
     if (sum <= 15 and countdown == 0) {
+        //start reading
         countdown = 50;
     }
     
     // reading
     if (countdown > 0) {
         
-        if (fingerReading[0].size() == 100) {
+        if (fingerReading[0].size() == 500) {
             //putText
-            sprintf(text,"finished reading finger!");
-            cv::putText(_image, text, cv::Point(400, 1000), FONT_HERSHEY_PLAIN, 2.0, Scalar::all(255), 1, 2);
+            //sprintf(text,"finished reading finger!");
+            //cv::putText(_image, text, cv::Point(400, 1000), FONT_HERSHEY_PLAIN, 2.0, Scalar::all(255), 1, 2);
             countdown -= 1;
-            return true;
+            return false;
         }
         else {
             //take reading
-            sprintf(text,"reading...");
-            cv::putText(_image, text, cv::Point(400, 1000), FONT_HERSHEY_PLAIN, 2.0, Scalar::all(255), 1, 2);
+            //sprintf(text,"reading...");
+            //cv::putText(_image, text, cv::Point(400, 1000), FONT_HERSHEY_PLAIN, 2.0, Scalar::all(255), 1, 2);
             for (int i = 0; i < 3; i++) {
                 fingerReading[i].push_back(avgPixelIntensity.val[i]);
             }
-            return false;
+            return true;
         }
         
         
@@ -81,11 +127,29 @@ float globalNameScopeVector[10];
             fingerReading[i].clear();
         }
 
-        return true;
+        return false;
     }
     
 }
 
+-(void)processFacialFeatures {
+    vector<Mat> layers;
+    cv::Mat image_copy;
+    cvtColor(_image, image_copy, CV_BGRA2BGR);
+    cvtColor(image_copy, image_copy, CV_BGR2HSV);
+    
+    //grab  just the Hue chanel
+    cv::split(image_copy,layers);
+    
+    // shift the colors
+    cv::add(layers[0],80.0,layers[0]);
+    
+    // get back image from separated layers
+    cv::merge(layers,image_copy);
+    
+    cvtColor(image_copy, image_copy, CV_HSV2BGR);
+    cvtColor(image_copy, _image, CV_BGR2BGRA);
+}
 
 -(void)processImage{
     

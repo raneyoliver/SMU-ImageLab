@@ -3,4 +3,149 @@
    uuid = "6F80213E-C87E-4908-8443-821E97953BAC"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "13C663A5-CA68-46DC-B5F4-7720B92176FF"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ImageLab/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
+            landmarkName = "mouth(face:retImage:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "13C663A5-CA68-46DC-B5F4-7720B92176FF - eb9b99f7dffa26b1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ImageLab.ViewController.mouth(face: __C.CIFaceFeature, retImage: __C.CIImage) -&gt; __C.CIImage"
+                  moduleName = "ImageLab"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oliver/Documents/SMU-ImageLab/ImageLab/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "122"
+                  endingLineNumber = "122"
+                  offsetFromSymbolStart = "132">
+               </Location>
+               <Location
+                  uuid = "13C663A5-CA68-46DC-B5F4-7720B92176FF - eb9b99f7dffa26b1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ImageLab.ViewController.mouth(face: __C.CIFaceFeature, retImage: __C.CIImage) -&gt; __C.CIImage"
+                  moduleName = "ImageLab"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oliver/Documents/SMU-ImageLab/ImageLab/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "122"
+                  endingLineNumber = "122"
+                  offsetFromSymbolStart = "200">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D02493FB-CC23-4DD5-85E3-68811EAA11F8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ImageLab/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "processImageSwift(inputImage:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4B62FF3F-B88D-4B41-85C6-794C71CDB3C2"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ImageLab/ViewControllerB.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
+            landmarkName = "processImageSwift(inputImage:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "851E0CC9-0EBB-49E9-804E-8788B46A8129"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ImageDSPUtils/OpenCVBridge.mm"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "-getFingerReading:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "851E0CC9-0EBB-49E9-804E-8788B46A8129 - ba2aa62ef4ae5bbf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[OpenCVBridge getFingerReading:]"
+                  moduleName = "ImageLab"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oliver/Documents/SMU-ImageLab/ImageDSPUtils/OpenCVBridge.mm"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "708">
+               </Location>
+               <Location
+                  uuid = "851E0CC9-0EBB-49E9-804E-8788B46A8129 - ba2aa62ef4ae5bbf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[OpenCVBridge getFingerReading:]"
+                  moduleName = "ImageLab"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oliver/Documents/SMU-ImageLab/ImageDSPUtils/OpenCVBridge.mm"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "724">
+               </Location>
+               <Location
+                  uuid = "851E0CC9-0EBB-49E9-804E-8788B46A8129 - ba2aa62ef4ae5bbf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[OpenCVBridge getFingerReading:]"
+                  moduleName = "ImageLab"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oliver/Documents/SMU-ImageLab/ImageDSPUtils/OpenCVBridge.mm"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "684">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

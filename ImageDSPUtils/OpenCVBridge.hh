@@ -29,6 +29,9 @@
 -(CIImage*)getImageComposite;
 
 -(bool)processFinger;
+-(void)processFacialFeatures;
+-(double)getFingerReading:(int)fps;
+-(int)getLatestData;
 
 // call this to perfrom processing (user controlled for better transparency)
 -(void)processImage;
